@@ -1,0 +1,273 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .wrap { padding: 1rem 0; max-width: 680px; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tab { padding: 6px 14px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); cursor: pointer; background: var(--color-background-primary); color: var(--color-text-secondary); transition: all 0.15s; }
+  .tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary); font-weight: 500; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .phase { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; background: var(--color-background-primary); }
+  .phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .phase-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+  .phase-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+  .phase-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 1px; }
+  .steps { list-style: none; padding: 0; }
+  .steps li { font-size: 13px; color: var(--color-text-secondary); padding: 5px 0; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; gap: 8px; align-items: flex-start; line-height: 1.5; }
+  .steps li:last-child { border-bottom: none; }
+  .check { width: 16px; height: 16px; border: 0.5px solid var(--color-border-secondary); border-radius: 3px; flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+  .check.done { background: #1D9E75; border-color: #1D9E75; color: white; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); font-weight: 500; }
+  .b-green { background: #EAF3DE; color: #3B6D11; }
+  .b-amber { background: #FAEEDA; color: #854F0B; }
+  .b-blue { background: #E6F1FB; color: #185FA5; }
+  .b-coral { background: #FAECE7; color: #993C1D; }
+  .mat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .mat-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; background: var(--color-background-primary); }
+  .mat-cat { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .mat-item { font-size: 13px; color: var(--color-text-secondary); padding: 3px 0; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; justify-content: space-between; align-items: center; }
+  .mat-item:last-child { border-bottom: none; }
+  .price { font-size: 12px; color: var(--color-text-tertiary); }
+  .total-bar { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
+  .tip { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 0.75rem 1rem; margin-bottom: 0.75rem; font-size: 13px; color: #633806; line-height: 1.5; }
+  .tip-label { font-weight: 500; font-size: 12px; margin-bottom: 3px; }
+  .progress-wrap { margin-bottom: 1.5rem; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .progress-bar { height: 6px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #1D9E75; border-radius: 3px; transition: width 0.3s; }
+</style>
+
+<div class="wrap">
+  <h2 style="sr-only">Pop-up camper food cart build plan</h2>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Overall progress</span><span id="prog-pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('phases')">Build phases</div>
+    <div class="tab" onclick="switchTab('materials')">Materials & costs</div>
+    <div class="tab" onclick="switchTab('tools')">Tools needed</div>
+    <div class="tab" onclick="switchTab('tips')">Pro tips</div>
+  </div>
+
+  <div id="phases" class="section active">
+
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:#EAF3DE;color:#3B6D11;">1</div>
+        <div><div class="phase-title">Assess & prep the camper</div><div class="phase-sub">Before buying anything — inspect and measure</div></div>
+        <span class="badge b-green" style="margin-left:auto;">Start here</span>
+      </div>
+      <ul class="steps" id="steps-0">
+        <li><div class="check" onclick="toggle(this)"></div>Pop the camper top to full open height and secure the lift mechanism with locking pins or a 2x4 prop</li>
+        <li><div class="check" onclick="toggle(this)"></div>Measure interior width, depth, and height — draw a simple sketch with exact dimensions</li>
+        <li><div class="check" onclick="toggle(this)"></div>Remove canvas tent fabric from the pop-out bed ends (keep the hardware in case you need it)</li>
+        <li><div class="check" onclick="toggle(this)"></div>Inspect the aluminum frame rails for rust or damage — wire brush and treat with Rust-Oleum if needed</li>
+        <li><div class="check" onclick="toggle(this)"></div>Identify where the roof lifts from (usually a center crank) — decide if the roof will be fixed permanently or remain operable</li>
+        <li><div class="check" onclick="toggle(this)"></div>Check the floor for soft spots — push hard with your foot in all corners. Replace any rotted OSB before framing walls</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:#E6F1FB;color:#185FA5;">2</div>
+        <div><div class="phase-title">Lock the roof in place</div><div class="phase-sub">Permanent or semi-permanent — your choice</div></div>
+        <span class="badge b-blue" style="margin-left:auto;">Phase 2</span>
+      </div>
+      <ul class="steps" id="steps-1">
+        <li><div class="check" onclick="toggle(this)"></div>Crank the roof to your desired height (typically 6.5–7 ft for a comfortable serving space)</li>
+        <li><div class="check" onclick="toggle(this)"></div>Cut four 2x4 vertical corner supports to match the exact height from floor to roof edge</li>
+        <li><div class="check" onclick="toggle(this)"></div>Attach corner posts to the existing aluminum frame using 3/8" carriage bolts with washers and locking nuts — drill through the aluminum</li>
+        <li><div class="check" onclick="toggle(this)"></div>Add a 2x4 top plate along all four sides to tie the posts together and give the roof something solid to rest on</li>
+        <li><div class="check" onclick="toggle(this)"></div>Apply foam weatherstrip tape between the roof edge and the top plate to seal gaps</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:#FAEEDA;color:#854F0B;">3</div>
+        <div><div class="phase-title">Frame the walls</div><div class="phase-sub">The skeleton everything attaches to</div></div>
+        <span class="badge b-amber" style="margin-left:auto;">Phase 3</span>
+      </div>
+      <ul class="steps" id="steps-2">
+        <li><div class="check" onclick="toggle(this)"></div>Use 2x2 or 2x3 lumber for interior wall framing — lighter than 2x4 and sufficient since you're not load-bearing</li>
+        <li><div class="check" onclick="toggle(this)"></div>Frame the back wall first as a full solid panel — attach studs every 16" between the corner posts</li>
+        <li><div class="check" onclick="toggle(this)"></div>Frame the two side walls, leaving a rough opening on the service side for your window/counter (typically 48–60" wide x 36" tall)</li>
+        <li><div class="check" onclick="toggle(this)"></div>Frame a header beam above the service window opening using doubled 2x3 to carry the load</li>
+        <li><div class="check" onclick="toggle(this)"></div>Attach framing to the camper's existing aluminum channels using 1/4" lag screws with aluminum-rated washers</li>
+        <li><div class="check" onclick="toggle(this)"></div>Add blocking (small horizontal 2x2 pieces) between studs every 24" for PVC plank backing</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:#FAECE7;color:#993C1D;">4</div>
+        <div><div class="phase-title">Install PVC wall planks</div><div class="phase-sub">Your white beaded tongue & groove panels</div></div>
+        <span class="badge b-coral" style="margin-left:auto;">Phase 4</span>
+      </div>
+      <ul class="steps" id="steps-3">
+        <li><div class="check" onclick="toggle(this)"></div>Start at the bottom of each wall — cut the first plank to length with a miter saw or fine-tooth handsaw</li>
+        <li><div class="check" onclick="toggle(this)"></div>Fasten planks to framing using 1-5/8" stainless finish nails (nail gun) or white-head trim screws — nail through the tongue so the groove hides the fastener</li>
+        <li><div class="check" onclick="toggle(this)"></div>Work upward course by course — tap each tongue into the groove with a rubber mallet to avoid cracking</li>
+        <li><div class="check" onclick="toggle(this)"></div>Cut around any camper features (lights, door hinges) with a jigsaw</li>
+        <li><div class="check" onclick="toggle(this)"></div>Apply white PVC trim at all corners using PVC corner molding — glue with PVC cement, then nail</li>
+        <li><div class="check" onclick="toggle(this)"></div>Caulk all seams, corners, and the roof edge with white paintable exterior caulk</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:#E1F5EE;color:#0F6E56;">5</div>
+        <div><div class="phase-title">Build the service window & counter</div><div class="phase-sub">The heart of your food cart look</div></div>
+        <span class="badge b-green" style="margin-left:auto;">Phase 5</span>
+      </div>
+      <ul class="steps" id="steps-4">
+        <li><div class="check" onclick="toggle(this)"></div>Cut a panel of 3/4" marine-grade plywood for the fold-down counter top — size it 6–8" wider than the window opening</li>
+        <li><div class="check" onclick="toggle(this)"></div>Attach the counter with a 72" continuous (piano) hinge along the bottom of the window opening</li>
+        <li><div class="check" onclick="toggle(this)"></div>Add two folding shelf support brackets (Stanley or Everbilt) on each side to hold the counter when open</li>
+        <li><div class="check" onclick="toggle(this)"></div>Cover the counter top with a food-safe butcher block adhesive wrap or seal plywood with 3 coats of exterior polyurethane</li>
+        <li><div class="check" onclick="toggle(this)"></div>Build the fold-up awning panel from 1/4" plywood or corrugated PVC — attach with a second piano hinge at top of window, hold open with chain or gas struts</li>
+        <li><div class="check" onclick="toggle(this)"></div>Add string lights along the awning interior using adhesive clips and an outdoor-rated extension cord</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:#E6F1FB;color:#185FA5;">6</div>
+        <div><div class="phase-title">Finishing & branding</div><div class="phase-sub">Make it look like your vision image</div></div>
+        <span class="badge b-blue" style="margin-left:auto;">Phase 6</span>
+      </div>
+      <ul class="steps" id="steps-5">
+        <li><div class="check" onclick="toggle(this)"></div>Prime all wood surfaces exposed to weather with exterior primer — PVC planks don't need paint but wood trim does</li>
+        <li><div class="check" onclick="toggle(this)"></div>Paint exterior wood trim with exterior latex — 2 coats minimum</li>
+        <li><div class="check" onclick="toggle(this)"></div>Apply your business name decal or painted lettering to the upper fascia panel (between roof edge and window)</li>
+        <li><div class="check" onclick="toggle(this)"></div>Install exterior hooks or brackets for chalkboard signs on each side of the window</li>
+        <li><div class="check" onclick="toggle(this)"></div>Add interior shelving using 1x8 pine boards on shelf pin strip tracks — adjustable height</li>
+        <li><div class="check" onclick="toggle(this)"></div>Install small LED puck lights inside upper shelf area for warm display lighting</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div id="materials" class="section">
+    <div class="mat-grid">
+      <div class="mat-card">
+        <div class="mat-cat">Lumber & framing</div>
+        <div class="mat-item">2x3x8 studs (×16)<span class="price">~$80</span></div>
+        <div class="mat-item">2x4x8 corner posts (×8)<span class="price">~$50</span></div>
+        <div class="mat-item">2x4x10 top plates (×4)<span class="price">~$30</span></div>
+        <div class="mat-item">1x8 pine shelving (×6)<span class="price">~$60</span></div>
+        <div class="mat-item">3/4" marine plywood (×1 sheet)<span class="price">~$80</span></div>
+        <div class="mat-item">1/4" plywood awning (×1 sheet)<span class="price">~$30</span></div>
+      </div>
+      <div class="mat-card">
+        <div class="mat-cat">PVC wall planks</div>
+        <div class="mat-item">PVC T&G beaded planks (×20 pcs)<span class="price">~$120</span></div>
+        <div class="mat-item">White PVC corner molding (×8)<span class="price">~$40</span></div>
+        <div class="mat-item">PVC J-channel trim (×4)<span class="price">~$20</span></div>
+        <div class="mat-item">PVC cement (1 can)<span class="price">~$12</span></div>
+      </div>
+      <div class="mat-card">
+        <div class="mat-cat">Hardware & fasteners</div>
+        <div class="mat-item">72" piano hinge (×2)<span class="price">~$35</span></div>
+        <div class="mat-item">Folding shelf brackets (×4)<span class="price">~$30</span></div>
+        <div class="mat-item">3/8" carriage bolts + nuts (×25)<span class="price">~$18</span></div>
+        <div class="mat-item">1/4" lag screws (×20)<span class="price">~$12</span></div>
+        <div class="mat-item">1-5/8" stainless finish nails (1 box)<span class="price">~$15</span></div>
+        <div class="mat-item">White trim screws (1 box)<span class="price">~$10</span></div>
+        <div class="mat-item">Foam weatherstrip tape (2 rolls)<span class="price">~$16</span></div>
+        <div class="mat-item">Shelf pin strip track (×4)<span class="price">~$20</span></div>
+      </div>
+      <div class="mat-card">
+        <div class="mat-cat">Finishing & sealing</div>
+        <div class="mat-item">White exterior caulk (×4 tubes)<span class="price">~$20</span></div>
+        <div class="mat-item">Exterior primer (1 gal)<span class="price">~$30</span></div>
+        <div class="mat-item">Exterior latex paint — white (1 gal)<span class="price">~$40</span></div>
+        <div class="mat-item">Exterior polyurethane (1 qt)<span class="price">~$18</span></div>
+        <div class="mat-item">Rust-Oleum rust converter (1 can)<span class="price">~$12</span></div>
+        <div class="mat-item">String lights — outdoor 25ft<span class="price">~$20</span></div>
+        <div class="mat-item">LED puck lights (4-pack)<span class="price">~$25</span></div>
+      </div>
+    </div>
+    <div class="total-bar">
+      <span style="font-size:14px;font-weight:500;color:var(--color-text-primary);">Estimated total (materials only)</span>
+      <span style="font-size:18px;font-weight:500;color:#0F6E56;">~$843–$950</span>
+    </div>
+    <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:8px;">Prices based on current Home Depot estimates. Does not include tools you may need to purchase.</p>
+  </div>
+
+  <div id="tools" class="section">
+    <div class="mat-grid">
+      <div class="mat-card">
+        <div class="mat-cat">Cutting tools</div>
+        <div class="mat-item">Circular saw<span class="badge b-blue">You may own</span></div>
+        <div class="mat-item">Miter saw / chop saw<span class="badge b-amber">Rent at HD</span></div>
+        <div class="mat-item">Jigsaw (for cutouts)<span class="badge b-blue">You may own</span></div>
+        <div class="mat-item">Fine-tooth handsaw<span class="price">~$20</span></div>
+      </div>
+      <div class="mat-card">
+        <div class="mat-cat">Fastening tools</div>
+        <div class="mat-item">Drill / driver<span class="badge b-blue">You may own</span></div>
+        <div class="mat-item">Drill bits (metal + wood set)<span class="price">~$25</span></div>
+        <div class="mat-item">Finish nail gun (18-gauge)<span class="badge b-amber">Rent at HD</span></div>
+        <div class="mat-item">Compressor (if nail gun)<span class="badge b-amber">Rent at HD</span></div>
+        <div class="mat-item">Ratchet set (3/8" drive)<span class="price">~$30</span></div>
+      </div>
+      <div class="mat-card">
+        <div class="mat-cat">Measuring & layout</div>
+        <div class="mat-item">Tape measure (25ft)<span class="price">~$15</span></div>
+        <div class="mat-item">Speed square<span class="price">~$10</span></div>
+        <div class="mat-item">4ft level<span class="price">~$20</span></div>
+        <div class="mat-item">Chalk line<span class="price">~$8</span></div>
+        <div class="mat-item">Pencil + marker</div>
+      </div>
+      <div class="mat-card">
+        <div class="mat-cat">Finishing tools</div>
+        <div class="mat-item">Caulk gun<span class="price">~$10</span></div>
+        <div class="mat-item">Paint brushes + roller<span class="price">~$15</span></div>
+        <div class="mat-item">Rubber mallet<span class="price">~$12</span></div>
+        <div class="mat-item">Safety glasses + work gloves</div>
+        <div class="mat-item">Clamps (4 pack, 12")<span class="price">~$25</span></div>
+      </div>
+    </div>
+    <div style="margin-top:1rem;padding:0.75rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);">
+      <p style="font-size:13px;color:var(--color-text-secondary);">Home Depot Tool Rental rents miter saws, nail guns, and compressors by the 4-hour or day. Typically $40–$80/day. Worth it to avoid buying if you won't use them again.</p>
+    </div>
+  </div>
+
+  <div id="tips" class="section">
+    <div class="tip"><div class="tip-label">Weight distribution</div>PVC planks are light, which is great — but your 2x4 corner posts add up. Keep heavy framing as close to the trailer axle as possible to avoid tongue-heavy or tail-heavy towing issues.</div>
+    <div class="tip"><div class="tip-label">PVC plank cutting tip</div>Use a fine-tooth blade (80-tooth) on your circular saw — PVC melts and gums up coarse blades. Cut slowly and let the blade do the work.</div>
+    <div class="tip"><div class="tip-label">Don't skip the blocking</div>PVC planks will bow and look wavy without solid backing every 16–24 inches. Add horizontal blocking between studs even where you don't think you need it.</div>
+    <div class="tip"><div class="tip-label">Service window height</div>Standard food cart counter height is 34–36 inches from the ground. Measure your team's comfortable serving height before cutting the window opening.</div>
+    <div class="tip"><div class="tip-label">Massachusetts permit heads-up</div>Even for a serving-only cart, Worcester requires a Temporary Food Establishment permit from the Board of Health. Apply early — it can take 4–6 weeks.</div>
+    <div class="tip"><div class="tip-label">Seal everything before it rains</div>Do the caulking phase in a single session before the next rain. Any exposed wood in the frame that gets wet before planking is installed can warp and cause alignment issues.</div>
+    <div class="tip"><div class="tip-label">Do a dry fit first</div>Before nailing any PVC planks, do a full dry-fit of an entire wall to confirm your spacing and cuts. It's much easier to adjust before you've fastened anything.</div>
+  </div>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function toggle(el) {
+  el.classList.toggle('done');
+  el.textContent = el.classList.contains('done') ? '✓' : '';
+  updateProgress();
+}
+
+function updateProgress() {
+  const all = document.querySelectorAll('.check');
+  const done = document.querySelectorAll('.check.done');
+  const pct = Math.round((done.length / all.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+}
+</script>
