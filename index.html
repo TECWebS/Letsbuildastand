@@ -1,273 +1,872 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Food Cart Build Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-sans); }
-  .wrap { padding: 1rem 0; max-width: 680px; }
-  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
-  .tab { padding: 6px 14px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); cursor: pointer; background: var(--color-background-primary); color: var(--color-text-secondary); transition: all 0.15s; }
-  .tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary); font-weight: 500; }
-  .section { display: none; }
-  .section.active { display: block; }
-  .phase { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; background: var(--color-background-primary); }
-  .phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .phase-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
-  .phase-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
-  .phase-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 1px; }
-  .steps { list-style: none; padding: 0; }
-  .steps li { font-size: 13px; color: var(--color-text-secondary); padding: 5px 0; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; gap: 8px; align-items: flex-start; line-height: 1.5; }
-  .steps li:last-child { border-bottom: none; }
-  .check { width: 16px; height: 16px; border: 0.5px solid var(--color-border-secondary); border-radius: 3px; flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-  .check.done { background: #1D9E75; border-color: #1D9E75; color: white; }
-  .badge { font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); font-weight: 500; }
-  .b-green { background: #EAF3DE; color: #3B6D11; }
-  .b-amber { background: #FAEEDA; color: #854F0B; }
-  .b-blue { background: #E6F1FB; color: #185FA5; }
-  .b-coral { background: #FAECE7; color: #993C1D; }
-  .mat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
-  .mat-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; background: var(--color-background-primary); }
-  .mat-cat { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
-  .mat-item { font-size: 13px; color: var(--color-text-secondary); padding: 3px 0; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; justify-content: space-between; align-items: center; }
+  :root {
+    --cream: #F7F3EC;
+    --warm-white: #FDFAF5;
+    --brown: #3D2B1F;
+    --brown-mid: #6B4C38;
+    --brown-light: #A07850;
+    --sage: #7A8C6E;
+    --sage-light: #B5C4A8;
+    --sage-pale: #EDF2E8;
+    --amber: #C8892A;
+    --amber-light: #F0C878;
+    --amber-pale: #FDF3DC;
+    --terracotta: #C05A38;
+    --terracotta-light: #E8917A;
+    --terracotta-pale: #FAEAE5;
+    --blue: #3A6080;
+    --blue-light: #7AAEC8;
+    --blue-pale: #E5F0F8;
+    --ink: #1E1610;
+    --border: rgba(61,43,31,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--cream);
+    color: var(--brown);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--brown);
+    color: var(--cream);
+    padding: 64px 40px 72px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.02) 40px,
+      rgba(255,255,255,0.02) 41px
+    );
+  }
+  .hero-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+    animation: floatIcon 3s ease-in-out infinite;
+  }
+  @keyframes floatIcon {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 12px;
+    color: var(--amber-light);
+  }
+  .hero-sub {
+    font-size: 16px;
+    color: rgba(247,243,236,0.65);
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+  .hero-pills {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+  }
+  .hero-pill {
+    background: rgba(247,243,236,0.12);
+    border: 0.5px solid rgba(247,243,236,0.25);
+    color: var(--cream);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+  }
+  .progress-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--brown-mid);
+    white-space: nowrap;
+    min-width: 120px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sage), var(--amber));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-pct {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sage);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* ── NAV TABS ── */
+  .nav {
+    display: flex;
+    gap: 0;
+    padding: 0 40px;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 14px 22px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--brown-mid);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-tab:hover { color: var(--brown); }
+  .nav-tab.active {
+    color: var(--brown);
+    border-bottom-color: var(--amber);
+  }
+
+  /* ── MAIN CONTENT ── */
+  main { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-intro {
+    margin-bottom: 32px;
+  }
+  .section-intro h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--brown);
+    margin-bottom: 6px;
+  }
+  .section-intro p {
+    font-size: 14px;
+    color: var(--brown-mid);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── PHASE CARDS ── */
+  .phase-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .phase-card:hover { box-shadow: 0 4px 24px rgba(61,43,31,0.08); }
+  .phase-header {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .phase-num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Playfair Display', serif;
+  }
+  .phase-info { flex: 1; }
+  .phase-title {
+    font-size: 16px; font-weight: 500; color: var(--brown);
+    margin-bottom: 2px;
+  }
+  .phase-subtitle {
+    font-size: 12px; color: var(--brown-mid); font-weight: 300;
+  }
+  .phase-meta {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .badge {
+    font-size: 11px; font-weight: 500; padding: 3px 10px;
+    border-radius: 100px; letter-spacing: 0.03em;
+  }
+  .phase-toggle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: transform 0.2s, background 0.2s;
+    color: var(--brown-mid);
+    flex-shrink: 0;
+  }
+  .phase-card.open .phase-toggle { transform: rotate(180deg); }
+  .phase-body {
+    display: none;
+    padding: 0 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .phase-card.open .phase-body { display: block; animation: fadeUp 0.2s ease; }
+  .phase-progress-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 0 16px;
+  }
+  .phase-prog-track {
+    flex: 1; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden;
+  }
+  .phase-prog-fill {
+    height: 100%; border-radius: 99px; transition: width 0.3s ease; width: 0%;
+  }
+  .phase-prog-label {
+    font-size: 11px; color: var(--brown-mid); min-width: 40px; text-align: right;
+  }
+
+  /* ── STEPS ── */
+  .step-list { list-style: none; }
+  .step-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(61,43,31,0.06);
+    transition: opacity 0.2s;
+  }
+  .step-item:last-child { border-bottom: none; }
+  .step-item.done { opacity: 0.5; }
+  .step-check {
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+    background: white;
+  }
+  .step-check:hover { border-color: var(--sage); }
+  .step-item.done .step-check {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: white;
+  }
+  .step-text {
+    font-size: 14px; line-height: 1.6; color: var(--brown);
+    font-weight: 300;
+  }
+
+  /* ── MATERIALS ── */
+  .mat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .mat-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .mat-card.c-sage::before { background: var(--sage); }
+  .mat-card.c-amber::before { background: var(--amber); }
+  .mat-card.c-terracotta::before { background: var(--terracotta); }
+  .mat-card.c-blue::before { background: var(--blue); }
+  .mat-cat {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .mat-cat.c-sage { color: var(--sage); }
+  .mat-cat.c-amber { color: var(--amber); }
+  .mat-cat.c-terracotta { color: var(--terracotta); }
+  .mat-cat.c-blue { color: var(--blue); }
+  .mat-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(61,43,31,0.06);
+    font-size: 13px;
+  }
   .mat-item:last-child { border-bottom: none; }
-  .price { font-size: 12px; color: var(--color-text-tertiary); }
-  .total-bar { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
-  .tip { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 0.75rem 1rem; margin-bottom: 0.75rem; font-size: 13px; color: #633806; line-height: 1.5; }
-  .tip-label { font-weight: 500; font-size: 12px; margin-bottom: 3px; }
-  .progress-wrap { margin-bottom: 1.5rem; }
-  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
-  .progress-bar { height: 6px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; }
-  .progress-fill { height: 100%; background: #1D9E75; border-radius: 3px; transition: width 0.3s; }
+  .mat-name { color: var(--brown); font-weight: 400; }
+  .mat-price { color: var(--brown-mid); font-weight: 500; font-size: 12px; }
+  .total-card {
+    background: var(--brown);
+    color: var(--cream);
+    border-radius: 14px;
+    padding: 24px 28px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .total-label { font-size: 14px; font-weight: 300; opacity: 0.7; }
+  .total-num { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--amber-light); }
+  .total-note { font-size: 11px; opacity: 0.5; margin-top: 2px; }
+
+  /* ── TOOLS ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .tool-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .tool-cat {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--brown-mid);
+    margin-bottom: 14px;
+  }
+  .tool-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(61,43,31,0.06);
+    font-size: 13px;
+  }
+  .tool-item:last-child { border-bottom: none; }
+  .tool-name { color: var(--brown); }
+  .tool-badge {
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 100px; letter-spacing: 0.03em; white-space: nowrap;
+  }
+  .tb-own { background: var(--sage-pale); color: var(--sage); }
+  .tb-rent { background: var(--amber-pale); color: var(--amber); }
+  .tb-buy { background: var(--terracotta-pale); color: var(--terracotta); }
+  .tool-note {
+    background: var(--blue-pale);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--blue);
+    line-height: 1.6;
+    border-left: 3px solid var(--blue-light);
+  }
+
+  /* ── TIPS ── */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .tip-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+  }
+  .tip-icon { font-size: 24px; margin-bottom: 10px; display: block; }
+  .tip-title {
+    font-size: 13px; font-weight: 600; color: var(--brown); margin-bottom: 6px;
+  }
+  .tip-text {
+    font-size: 13px; color: var(--brown-mid); line-height: 1.65; font-weight: 300;
+  }
+  .tip-card.highlight {
+    background: var(--amber-pale);
+    border-color: rgba(200,137,42,0.25);
+  }
+  .tip-card.highlight .tip-title { color: var(--amber); }
+  .tip-card.highlight .tip-text { color: var(--brown-mid); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 32px;
+    font-size: 12px;
+    color: var(--brown-mid);
+    border-top: 1px solid var(--border);
+    background: var(--warm-white);
+    font-weight: 300;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .hero { padding: 48px 20px 56px; }
+    .progress-section { padding: 16px 20px; }
+    .nav { padding: 0 16px; }
+    main { padding: 28px 16px 60px; }
+    .phase-header { padding: 16px 18px; }
+    .phase-body { padding: 0 18px 16px; }
+  }
 </style>
+</head>
+<body>
 
-<div class="wrap">
-  <h2 style="sr-only">Pop-up camper food cart build plan</h2>
+<!-- HERO -->
+<header class="hero">
+  <span class="hero-icon">☕</span>
+  <h1>The Food Cart<br><em>Build Plan</em></h1>
+  <p class="hero-sub">A complete DIY guide to converting a Coleman Santa Fe pop-up camper into a charming mobile serving cart</p>
+  <div class="hero-pills">
+    <span class="hero-pill">6 Phases</span>
+    <span class="hero-pill">DIY Friendly</span>
+    <span class="hero-pill">~$850–$950 Materials</span>
+    <span class="hero-pill">Home Depot</span>
+    <span class="hero-pill">Family Project</span>
+  </div>
+</header>
 
-  <div class="progress-wrap">
-    <div class="progress-label"><span>Overall progress</span><span id="prog-pct">0%</span></div>
-    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+<!-- STICKY PROGRESS -->
+<div class="progress-section">
+  <span class="progress-label">Overall progress</span>
+  <div class="progress-track">
+    <div class="progress-fill" id="global-fill"></div>
+  </div>
+  <span class="progress-pct" id="global-pct">0%</span>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-tab active" onclick="showTab('phases',this)">📋 Build Phases</button>
+  <button class="nav-tab" onclick="showTab('materials',this)">🛒 Materials & Cost</button>
+  <button class="nav-tab" onclick="showTab('tools',this)">🔧 Tools Needed</button>
+  <button class="nav-tab" onclick="showTab('tips',this)">💡 Pro Tips</button>
+</nav>
+
+<!-- ── PHASES ── -->
+<main>
+<div class="tab-panel active" id="tab-phases">
+  <div class="section-intro">
+    <h2>Build Phases</h2>
+    <p>Work through each phase in order. Click any phase to expand it, then check off steps as you complete them.</p>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('phases')">Build phases</div>
-    <div class="tab" onclick="switchTab('materials')">Materials & costs</div>
-    <div class="tab" onclick="switchTab('tools')">Tools needed</div>
-    <div class="tab" onclick="switchTab('tips')">Pro tips</div>
-  </div>
-
-  <div id="phases" class="section active">
-
-    <div class="phase">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#EAF3DE;color:#3B6D11;">1</div>
-        <div><div class="phase-title">Assess & prep the camper</div><div class="phase-sub">Before buying anything — inspect and measure</div></div>
-        <span class="badge b-green" style="margin-left:auto;">Start here</span>
+  <!-- PHASE 1 -->
+  <div class="phase-card" id="phase-0">
+    <div class="phase-header" onclick="togglePhase(0)">
+      <div class="phase-num" style="background:var(--sage-pale);color:var(--sage);">1</div>
+      <div class="phase-info">
+        <div class="phase-title">Assess & Prep the Camper</div>
+        <div class="phase-subtitle">Before buying anything — inspect, clean, and measure</div>
       </div>
-      <ul class="steps" id="steps-0">
-        <li><div class="check" onclick="toggle(this)"></div>Pop the camper top to full open height and secure the lift mechanism with locking pins or a 2x4 prop</li>
-        <li><div class="check" onclick="toggle(this)"></div>Measure interior width, depth, and height — draw a simple sketch with exact dimensions</li>
-        <li><div class="check" onclick="toggle(this)"></div>Remove canvas tent fabric from the pop-out bed ends (keep the hardware in case you need it)</li>
-        <li><div class="check" onclick="toggle(this)"></div>Inspect the aluminum frame rails for rust or damage — wire brush and treat with Rust-Oleum if needed</li>
-        <li><div class="check" onclick="toggle(this)"></div>Identify where the roof lifts from (usually a center crank) — decide if the roof will be fixed permanently or remain operable</li>
-        <li><div class="check" onclick="toggle(this)"></div>Check the floor for soft spots — push hard with your foot in all corners. Replace any rotted OSB before framing walls</li>
+      <div class="phase-meta">
+        <span class="badge" style="background:var(--sage-pale);color:var(--sage);">Start Here</span>
+        <span class="phase-prog-label" id="pp0">0/6</span>
+        <div class="phase-toggle">▾</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-progress-row">
+        <div class="phase-prog-track"><div class="phase-prog-fill" id="pf0" style="background:var(--sage);"></div></div>
+        <span class="phase-prog-label" id="pl0">0%</span>
+      </div>
+      <ul class="step-list" data-phase="0">
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Pop the camper top to full open height and secure the lift mechanism with locking pins or a 2×4 prop</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Measure interior width, depth, and height — draw a simple sketch with exact dimensions</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Remove canvas tent fabric from the pop-out bed ends (keep all hardware in a labeled bag)</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Inspect the aluminum frame rails for rust — wire brush and treat with Rust-Oleum Rust Converter if needed</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Decide: will the roof be fixed permanently or remain operable? This affects everything that follows</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Check the floor for soft spots by pushing hard with your foot in every corner — replace rotted OSB before framing</span></li>
       </ul>
-    </div>
-
-    <div class="phase">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#E6F1FB;color:#185FA5;">2</div>
-        <div><div class="phase-title">Lock the roof in place</div><div class="phase-sub">Permanent or semi-permanent — your choice</div></div>
-        <span class="badge b-blue" style="margin-left:auto;">Phase 2</span>
-      </div>
-      <ul class="steps" id="steps-1">
-        <li><div class="check" onclick="toggle(this)"></div>Crank the roof to your desired height (typically 6.5–7 ft for a comfortable serving space)</li>
-        <li><div class="check" onclick="toggle(this)"></div>Cut four 2x4 vertical corner supports to match the exact height from floor to roof edge</li>
-        <li><div class="check" onclick="toggle(this)"></div>Attach corner posts to the existing aluminum frame using 3/8" carriage bolts with washers and locking nuts — drill through the aluminum</li>
-        <li><div class="check" onclick="toggle(this)"></div>Add a 2x4 top plate along all four sides to tie the posts together and give the roof something solid to rest on</li>
-        <li><div class="check" onclick="toggle(this)"></div>Apply foam weatherstrip tape between the roof edge and the top plate to seal gaps</li>
-      </ul>
-    </div>
-
-    <div class="phase">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#FAEEDA;color:#854F0B;">3</div>
-        <div><div class="phase-title">Frame the walls</div><div class="phase-sub">The skeleton everything attaches to</div></div>
-        <span class="badge b-amber" style="margin-left:auto;">Phase 3</span>
-      </div>
-      <ul class="steps" id="steps-2">
-        <li><div class="check" onclick="toggle(this)"></div>Use 2x2 or 2x3 lumber for interior wall framing — lighter than 2x4 and sufficient since you're not load-bearing</li>
-        <li><div class="check" onclick="toggle(this)"></div>Frame the back wall first as a full solid panel — attach studs every 16" between the corner posts</li>
-        <li><div class="check" onclick="toggle(this)"></div>Frame the two side walls, leaving a rough opening on the service side for your window/counter (typically 48–60" wide x 36" tall)</li>
-        <li><div class="check" onclick="toggle(this)"></div>Frame a header beam above the service window opening using doubled 2x3 to carry the load</li>
-        <li><div class="check" onclick="toggle(this)"></div>Attach framing to the camper's existing aluminum channels using 1/4" lag screws with aluminum-rated washers</li>
-        <li><div class="check" onclick="toggle(this)"></div>Add blocking (small horizontal 2x2 pieces) between studs every 24" for PVC plank backing</li>
-      </ul>
-    </div>
-
-    <div class="phase">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#FAECE7;color:#993C1D;">4</div>
-        <div><div class="phase-title">Install PVC wall planks</div><div class="phase-sub">Your white beaded tongue & groove panels</div></div>
-        <span class="badge b-coral" style="margin-left:auto;">Phase 4</span>
-      </div>
-      <ul class="steps" id="steps-3">
-        <li><div class="check" onclick="toggle(this)"></div>Start at the bottom of each wall — cut the first plank to length with a miter saw or fine-tooth handsaw</li>
-        <li><div class="check" onclick="toggle(this)"></div>Fasten planks to framing using 1-5/8" stainless finish nails (nail gun) or white-head trim screws — nail through the tongue so the groove hides the fastener</li>
-        <li><div class="check" onclick="toggle(this)"></div>Work upward course by course — tap each tongue into the groove with a rubber mallet to avoid cracking</li>
-        <li><div class="check" onclick="toggle(this)"></div>Cut around any camper features (lights, door hinges) with a jigsaw</li>
-        <li><div class="check" onclick="toggle(this)"></div>Apply white PVC trim at all corners using PVC corner molding — glue with PVC cement, then nail</li>
-        <li><div class="check" onclick="toggle(this)"></div>Caulk all seams, corners, and the roof edge with white paintable exterior caulk</li>
-      </ul>
-    </div>
-
-    <div class="phase">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#E1F5EE;color:#0F6E56;">5</div>
-        <div><div class="phase-title">Build the service window & counter</div><div class="phase-sub">The heart of your food cart look</div></div>
-        <span class="badge b-green" style="margin-left:auto;">Phase 5</span>
-      </div>
-      <ul class="steps" id="steps-4">
-        <li><div class="check" onclick="toggle(this)"></div>Cut a panel of 3/4" marine-grade plywood for the fold-down counter top — size it 6–8" wider than the window opening</li>
-        <li><div class="check" onclick="toggle(this)"></div>Attach the counter with a 72" continuous (piano) hinge along the bottom of the window opening</li>
-        <li><div class="check" onclick="toggle(this)"></div>Add two folding shelf support brackets (Stanley or Everbilt) on each side to hold the counter when open</li>
-        <li><div class="check" onclick="toggle(this)"></div>Cover the counter top with a food-safe butcher block adhesive wrap or seal plywood with 3 coats of exterior polyurethane</li>
-        <li><div class="check" onclick="toggle(this)"></div>Build the fold-up awning panel from 1/4" plywood or corrugated PVC — attach with a second piano hinge at top of window, hold open with chain or gas struts</li>
-        <li><div class="check" onclick="toggle(this)"></div>Add string lights along the awning interior using adhesive clips and an outdoor-rated extension cord</li>
-      </ul>
-    </div>
-
-    <div class="phase">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#E6F1FB;color:#185FA5;">6</div>
-        <div><div class="phase-title">Finishing & branding</div><div class="phase-sub">Make it look like your vision image</div></div>
-        <span class="badge b-blue" style="margin-left:auto;">Phase 6</span>
-      </div>
-      <ul class="steps" id="steps-5">
-        <li><div class="check" onclick="toggle(this)"></div>Prime all wood surfaces exposed to weather with exterior primer — PVC planks don't need paint but wood trim does</li>
-        <li><div class="check" onclick="toggle(this)"></div>Paint exterior wood trim with exterior latex — 2 coats minimum</li>
-        <li><div class="check" onclick="toggle(this)"></div>Apply your business name decal or painted lettering to the upper fascia panel (between roof edge and window)</li>
-        <li><div class="check" onclick="toggle(this)"></div>Install exterior hooks or brackets for chalkboard signs on each side of the window</li>
-        <li><div class="check" onclick="toggle(this)"></div>Add interior shelving using 1x8 pine boards on shelf pin strip tracks — adjustable height</li>
-        <li><div class="check" onclick="toggle(this)"></div>Install small LED puck lights inside upper shelf area for warm display lighting</li>
-      </ul>
-    </div>
-
-  </div>
-
-  <div id="materials" class="section">
-    <div class="mat-grid">
-      <div class="mat-card">
-        <div class="mat-cat">Lumber & framing</div>
-        <div class="mat-item">2x3x8 studs (×16)<span class="price">~$80</span></div>
-        <div class="mat-item">2x4x8 corner posts (×8)<span class="price">~$50</span></div>
-        <div class="mat-item">2x4x10 top plates (×4)<span class="price">~$30</span></div>
-        <div class="mat-item">1x8 pine shelving (×6)<span class="price">~$60</span></div>
-        <div class="mat-item">3/4" marine plywood (×1 sheet)<span class="price">~$80</span></div>
-        <div class="mat-item">1/4" plywood awning (×1 sheet)<span class="price">~$30</span></div>
-      </div>
-      <div class="mat-card">
-        <div class="mat-cat">PVC wall planks</div>
-        <div class="mat-item">PVC T&G beaded planks (×20 pcs)<span class="price">~$120</span></div>
-        <div class="mat-item">White PVC corner molding (×8)<span class="price">~$40</span></div>
-        <div class="mat-item">PVC J-channel trim (×4)<span class="price">~$20</span></div>
-        <div class="mat-item">PVC cement (1 can)<span class="price">~$12</span></div>
-      </div>
-      <div class="mat-card">
-        <div class="mat-cat">Hardware & fasteners</div>
-        <div class="mat-item">72" piano hinge (×2)<span class="price">~$35</span></div>
-        <div class="mat-item">Folding shelf brackets (×4)<span class="price">~$30</span></div>
-        <div class="mat-item">3/8" carriage bolts + nuts (×25)<span class="price">~$18</span></div>
-        <div class="mat-item">1/4" lag screws (×20)<span class="price">~$12</span></div>
-        <div class="mat-item">1-5/8" stainless finish nails (1 box)<span class="price">~$15</span></div>
-        <div class="mat-item">White trim screws (1 box)<span class="price">~$10</span></div>
-        <div class="mat-item">Foam weatherstrip tape (2 rolls)<span class="price">~$16</span></div>
-        <div class="mat-item">Shelf pin strip track (×4)<span class="price">~$20</span></div>
-      </div>
-      <div class="mat-card">
-        <div class="mat-cat">Finishing & sealing</div>
-        <div class="mat-item">White exterior caulk (×4 tubes)<span class="price">~$20</span></div>
-        <div class="mat-item">Exterior primer (1 gal)<span class="price">~$30</span></div>
-        <div class="mat-item">Exterior latex paint — white (1 gal)<span class="price">~$40</span></div>
-        <div class="mat-item">Exterior polyurethane (1 qt)<span class="price">~$18</span></div>
-        <div class="mat-item">Rust-Oleum rust converter (1 can)<span class="price">~$12</span></div>
-        <div class="mat-item">String lights — outdoor 25ft<span class="price">~$20</span></div>
-        <div class="mat-item">LED puck lights (4-pack)<span class="price">~$25</span></div>
-      </div>
-    </div>
-    <div class="total-bar">
-      <span style="font-size:14px;font-weight:500;color:var(--color-text-primary);">Estimated total (materials only)</span>
-      <span style="font-size:18px;font-weight:500;color:#0F6E56;">~$843–$950</span>
-    </div>
-    <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:8px;">Prices based on current Home Depot estimates. Does not include tools you may need to purchase.</p>
-  </div>
-
-  <div id="tools" class="section">
-    <div class="mat-grid">
-      <div class="mat-card">
-        <div class="mat-cat">Cutting tools</div>
-        <div class="mat-item">Circular saw<span class="badge b-blue">You may own</span></div>
-        <div class="mat-item">Miter saw / chop saw<span class="badge b-amber">Rent at HD</span></div>
-        <div class="mat-item">Jigsaw (for cutouts)<span class="badge b-blue">You may own</span></div>
-        <div class="mat-item">Fine-tooth handsaw<span class="price">~$20</span></div>
-      </div>
-      <div class="mat-card">
-        <div class="mat-cat">Fastening tools</div>
-        <div class="mat-item">Drill / driver<span class="badge b-blue">You may own</span></div>
-        <div class="mat-item">Drill bits (metal + wood set)<span class="price">~$25</span></div>
-        <div class="mat-item">Finish nail gun (18-gauge)<span class="badge b-amber">Rent at HD</span></div>
-        <div class="mat-item">Compressor (if nail gun)<span class="badge b-amber">Rent at HD</span></div>
-        <div class="mat-item">Ratchet set (3/8" drive)<span class="price">~$30</span></div>
-      </div>
-      <div class="mat-card">
-        <div class="mat-cat">Measuring & layout</div>
-        <div class="mat-item">Tape measure (25ft)<span class="price">~$15</span></div>
-        <div class="mat-item">Speed square<span class="price">~$10</span></div>
-        <div class="mat-item">4ft level<span class="price">~$20</span></div>
-        <div class="mat-item">Chalk line<span class="price">~$8</span></div>
-        <div class="mat-item">Pencil + marker</div>
-      </div>
-      <div class="mat-card">
-        <div class="mat-cat">Finishing tools</div>
-        <div class="mat-item">Caulk gun<span class="price">~$10</span></div>
-        <div class="mat-item">Paint brushes + roller<span class="price">~$15</span></div>
-        <div class="mat-item">Rubber mallet<span class="price">~$12</span></div>
-        <div class="mat-item">Safety glasses + work gloves</div>
-        <div class="mat-item">Clamps (4 pack, 12")<span class="price">~$25</span></div>
-      </div>
-    </div>
-    <div style="margin-top:1rem;padding:0.75rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);">
-      <p style="font-size:13px;color:var(--color-text-secondary);">Home Depot Tool Rental rents miter saws, nail guns, and compressors by the 4-hour or day. Typically $40–$80/day. Worth it to avoid buying if you won't use them again.</p>
     </div>
   </div>
 
-  <div id="tips" class="section">
-    <div class="tip"><div class="tip-label">Weight distribution</div>PVC planks are light, which is great — but your 2x4 corner posts add up. Keep heavy framing as close to the trailer axle as possible to avoid tongue-heavy or tail-heavy towing issues.</div>
-    <div class="tip"><div class="tip-label">PVC plank cutting tip</div>Use a fine-tooth blade (80-tooth) on your circular saw — PVC melts and gums up coarse blades. Cut slowly and let the blade do the work.</div>
-    <div class="tip"><div class="tip-label">Don't skip the blocking</div>PVC planks will bow and look wavy without solid backing every 16–24 inches. Add horizontal blocking between studs even where you don't think you need it.</div>
-    <div class="tip"><div class="tip-label">Service window height</div>Standard food cart counter height is 34–36 inches from the ground. Measure your team's comfortable serving height before cutting the window opening.</div>
-    <div class="tip"><div class="tip-label">Massachusetts permit heads-up</div>Even for a serving-only cart, Worcester requires a Temporary Food Establishment permit from the Board of Health. Apply early — it can take 4–6 weeks.</div>
-    <div class="tip"><div class="tip-label">Seal everything before it rains</div>Do the caulking phase in a single session before the next rain. Any exposed wood in the frame that gets wet before planking is installed can warp and cause alignment issues.</div>
-    <div class="tip"><div class="tip-label">Do a dry fit first</div>Before nailing any PVC planks, do a full dry-fit of an entire wall to confirm your spacing and cuts. It's much easier to adjust before you've fastened anything.</div>
+  <!-- PHASE 2 -->
+  <div class="phase-card" id="phase-1">
+    <div class="phase-header" onclick="togglePhase(1)">
+      <div class="phase-num" style="background:var(--blue-pale);color:var(--blue);">2</div>
+      <div class="phase-info">
+        <div class="phase-title">Lock the Roof in Place</div>
+        <div class="phase-subtitle">Set your permanent height — typically 6.5–7 ft</div>
+      </div>
+      <div class="phase-meta">
+        <span class="badge" style="background:var(--blue-pale);color:var(--blue);">Phase 2</span>
+        <span class="phase-prog-label" id="pp1">0/5</span>
+        <div class="phase-toggle">▾</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-progress-row">
+        <div class="phase-prog-track"><div class="phase-prog-fill" id="pf1" style="background:var(--blue);"></div></div>
+        <span class="phase-prog-label" id="pl1">0%</span>
+      </div>
+      <ul class="step-list" data-phase="1">
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Crank the roof to your desired height and temporarily prop it solid while you work</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Cut four 2×4 vertical corner posts to match the exact height from floor to roof edge</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Attach corner posts to the existing aluminum frame using 3/8" carriage bolts with washers and locking nuts — drill through the aluminum</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Add a 2×4 top plate along all four sides to tie the posts together and give the roof a solid seat</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Apply foam weatherstrip tape between the roof edge and the top plate to seal out rain</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-card" id="phase-2">
+    <div class="phase-header" onclick="togglePhase(2)">
+      <div class="phase-num" style="background:var(--amber-pale);color:var(--amber);">3</div>
+      <div class="phase-info">
+        <div class="phase-title">Frame the Walls</div>
+        <div class="phase-subtitle">The skeleton everything attaches to</div>
+      </div>
+      <div class="phase-meta">
+        <span class="badge" style="background:var(--amber-pale);color:var(--amber);">Phase 3</span>
+        <span class="phase-prog-label" id="pp2">0/6</span>
+        <div class="phase-toggle">▾</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-progress-row">
+        <div class="phase-prog-track"><div class="phase-prog-fill" id="pf2" style="background:var(--amber);"></div></div>
+        <span class="phase-prog-label" id="pl2">0%</span>
+      </div>
+      <ul class="step-list" data-phase="2">
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Use 2×2 or 2×3 lumber for wall framing — lighter than 2×4 and sufficient since you're not load-bearing</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Frame the back wall first as a full solid panel with studs every 16" between corner posts</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Frame the two side walls, leaving a rough opening on the service side: typically 48–60" wide × 36" tall for the window</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Frame a header beam above the service window using doubled 2×3 to carry the load above the opening</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Attach framing to the camper's aluminum channels using 1/4" lag screws with aluminum-rated washers</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Add horizontal blocking between studs every 24" to give PVC planks solid backing and prevent bowing</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-card" id="phase-3">
+    <div class="phase-header" onclick="togglePhase(3)">
+      <div class="phase-num" style="background:var(--terracotta-pale);color:var(--terracotta);">4</div>
+      <div class="phase-info">
+        <div class="phase-title">Install PVC Wall Planks</div>
+        <div class="phase-subtitle">White beaded tongue & groove — your signature look</div>
+      </div>
+      <div class="phase-meta">
+        <span class="badge" style="background:var(--terracotta-pale);color:var(--terracotta);">Phase 4</span>
+        <span class="phase-prog-label" id="pp3">0/6</span>
+        <div class="phase-toggle">▾</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-progress-row">
+        <div class="phase-prog-track"><div class="phase-prog-fill" id="pf3" style="background:var(--terracotta);"></div></div>
+        <span class="phase-prog-label" id="pl3">0%</span>
+      </div>
+      <ul class="step-list" data-phase="3">
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Start at the bottom of each wall — dry-fit an entire wall before nailing anything to confirm spacing</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Fasten planks to framing with 1-5/8" stainless finish nails through the tongue — this hides the fastener in the next groove</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Work upward course by course — tap each tongue into the groove with a rubber mallet, never a metal hammer</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Cut around camper features (lights, door, hinges) using a jigsaw with a fine-tooth blade</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Apply white PVC corner molding at all inside and outside corners — use PVC cement and finish nails</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Caulk all seams, corners, and the roof/wall junction with white paintable exterior caulk in one continuous session</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="phase-card" id="phase-4">
+    <div class="phase-header" onclick="togglePhase(4)">
+      <div class="phase-num" style="background:var(--sage-pale);color:var(--sage);">5</div>
+      <div class="phase-info">
+        <div class="phase-title">Build the Service Window & Counter</div>
+        <div class="phase-subtitle">The fold-down counter and awning — the heart of your cart</div>
+      </div>
+      <div class="phase-meta">
+        <span class="badge" style="background:var(--sage-pale);color:var(--sage);">Phase 5</span>
+        <span class="phase-prog-label" id="pp4">0/6</span>
+        <div class="phase-toggle">▾</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-progress-row">
+        <div class="phase-prog-track"><div class="phase-prog-fill" id="pf4" style="background:var(--sage);"></div></div>
+        <span class="phase-prog-label" id="pl4">0%</span>
+      </div>
+      <ul class="step-list" data-phase="4">
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Cut 3/4" marine-grade plywood for the fold-down counter — 6–8" wider than the window opening, depth of 18–24"</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Attach the counter with a 72" continuous (piano) hinge along the bottom edge of the window opening</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Install two Everbilt heavy-duty folding shelf support brackets on each side to hold the counter level when open</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Seal counter top with 3 coats of exterior polyurethane or cover with food-safe butcher block adhesive wrap</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Build the fold-up awning panel from 1/4" plywood — attach with a piano hinge at the top of the window, hold open with chain or gas struts</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Run string lights along the awning underside using adhesive clips and an outdoor-rated extension cord</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 6 -->
+  <div class="phase-card" id="phase-5">
+    <div class="phase-header" onclick="togglePhase(5)">
+      <div class="phase-num" style="background:var(--amber-pale);color:var(--amber);">6</div>
+      <div class="phase-info">
+        <div class="phase-title">Finishing & Branding</div>
+        <div class="phase-subtitle">Paint, signage, shelving, and lights</div>
+      </div>
+      <div class="phase-meta">
+        <span class="badge" style="background:var(--amber-pale);color:var(--amber);">Final Phase</span>
+        <span class="phase-prog-label" id="pp5">0/6</span>
+        <div class="phase-toggle">▾</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-progress-row">
+        <div class="phase-prog-track"><div class="phase-prog-fill" id="pf5" style="background:var(--amber);"></div></div>
+        <span class="phase-prog-label" id="pl5">0%</span>
+      </div>
+      <ul class="step-list" data-phase="5">
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Prime all exposed wood trim and the awning panel with exterior oil-based primer — PVC planks need no paint</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Apply 2 coats of exterior latex paint to all wood trim — brush first, then light roller for an even finish</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Apply your business name to the upper fascia panel — vinyl decal from a sign shop or hand-lettered paint</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Install exterior chalkboard sign hooks or brackets on each side of the service window</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Add interior shelving using 1×8 pine on adjustable shelf pin strip tracks — set to your display height</span></li>
+        <li class="step-item"><div class="step-check" onclick="toggleStep(this)"></div><span class="step-text">Install warm LED puck lights inside the upper shelf area — plug into a power strip on a timer for easy operation</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /phases -->
+
+<!-- ── MATERIALS ── -->
+<div class="tab-panel" id="tab-materials">
+  <div class="section-intro">
+    <h2>Materials & Estimated Cost</h2>
+    <p>All items available at Home Depot. Prices are current estimates and may vary by location.</p>
+  </div>
+  <div class="mat-grid">
+    <div class="mat-card c-sage">
+      <div class="mat-cat c-sage">Lumber & Framing</div>
+      <div class="mat-item"><span class="mat-name">2×3×8 studs (×16)</span><span class="mat-price">~$80</span></div>
+      <div class="mat-item"><span class="mat-name">2×4×8 corner posts (×8)</span><span class="mat-price">~$50</span></div>
+      <div class="mat-item"><span class="mat-name">2×4×10 top plates (×4)</span><span class="mat-price">~$30</span></div>
+      <div class="mat-item"><span class="mat-name">1×8 pine shelving (×6)</span><span class="mat-price">~$60</span></div>
+      <div class="mat-item"><span class="mat-name">3/4" marine plywood (1 sheet)</span><span class="mat-price">~$80</span></div>
+      <div class="mat-item"><span class="mat-name">1/4" plywood for awning (1 sheet)</span><span class="mat-price">~$30</span></div>
+    </div>
+    <div class="mat-card c-amber">
+      <div class="mat-cat c-amber">PVC Wall Planks</div>
+      <div class="mat-item"><span class="mat-name">PVC T&G beaded planks (×20)</span><span class="mat-price">~$120</span></div>
+      <div class="mat-item"><span class="mat-name">White PVC corner molding (×8)</span><span class="mat-price">~$40</span></div>
+      <div class="mat-item"><span class="mat-name">PVC J-channel trim (×4)</span><span class="mat-price">~$20</span></div>
+      <div class="mat-item"><span class="mat-name">PVC cement (1 can)</span><span class="mat-price">~$12</span></div>
+    </div>
+    <div class="mat-card c-terracotta">
+      <div class="mat-cat c-terracotta">Hardware & Fasteners</div>
+      <div class="mat-item"><span class="mat-name">72" piano hinge (×2)</span><span class="mat-price">~$35</span></div>
+      <div class="mat-item"><span class="mat-name">Folding shelf brackets (×4)</span><span class="mat-price">~$30</span></div>
+      <div class="mat-item"><span class="mat-name">3/8" carriage bolts + nuts (×25)</span><span class="mat-price">~$18</span></div>
+      <div class="mat-item"><span class="mat-name">1/4" lag screws (×20)</span><span class="mat-price">~$12</span></div>
+      <div class="mat-item"><span class="mat-name">1-5/8" stainless finish nails</span><span class="mat-price">~$15</span></div>
+      <div class="mat-item"><span class="mat-name">White trim screws (1 box)</span><span class="mat-price">~$10</span></div>
+      <div class="mat-item"><span class="mat-name">Foam weatherstrip tape (×2 rolls)</span><span class="mat-price">~$16</span></div>
+      <div class="mat-item"><span class="mat-name">Shelf pin strip track (×4)</span><span class="mat-price">~$20</span></div>
+    </div>
+    <div class="mat-card c-blue">
+      <div class="mat-cat c-blue">Finishing & Lighting</div>
+      <div class="mat-item"><span class="mat-name">White exterior caulk (×4 tubes)</span><span class="mat-price">~$20</span></div>
+      <div class="mat-item"><span class="mat-name">Exterior oil-based primer (1 gal)</span><span class="mat-price">~$30</span></div>
+      <div class="mat-item"><span class="mat-name">Exterior latex paint — white (1 gal)</span><span class="mat-price">~$40</span></div>
+      <div class="mat-item"><span class="mat-name">Exterior polyurethane (1 qt)</span><span class="mat-price">~$18</span></div>
+      <div class="mat-item"><span class="mat-name">Rust-Oleum Rust Converter (1 can)</span><span class="mat-price">~$12</span></div>
+      <div class="mat-item"><span class="mat-name">String lights — outdoor 25ft</span><span class="mat-price">~$20</span></div>
+      <div class="mat-item"><span class="mat-name">LED puck lights (4-pack)</span><span class="mat-price">~$25</span></div>
+    </div>
+  </div>
+  <div class="total-card">
+    <div>
+      <div class="total-label">Estimated materials total</div>
+      <div class="total-note">Tools not included — see Tools tab</div>
+    </div>
+    <div class="total-num">~$843–$950</div>
   </div>
 </div>
 
+<!-- ── TOOLS ── -->
+<div class="tab-panel" id="tab-tools">
+  <div class="section-intro">
+    <h2>Tools Needed</h2>
+    <p>Many of these you may already own. Home Depot Tool Rental rents power tools by the 4-hour block or full day.</p>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-cat">Cutting Tools</div>
+      <div class="tool-item"><span class="tool-name">Circular saw</span><span class="tool-badge tb-own">You may own</span></div>
+      <div class="tool-item"><span class="tool-name">Miter / chop saw</span><span class="tool-badge tb-rent">Rent at HD</span></div>
+      <div class="tool-item"><span class="tool-name">Jigsaw</span><span class="tool-badge tb-own">You may own</span></div>
+      <div class="tool-item"><span class="tool-name">Fine-tooth handsaw</span><span class="tool-badge tb-buy">~$20</span></div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-cat">Fastening Tools</div>
+      <div class="tool-item"><span class="tool-name">Drill / driver</span><span class="tool-badge tb-own">You may own</span></div>
+      <div class="tool-item"><span class="tool-name">Drill bit set (metal + wood)</span><span class="tool-badge tb-buy">~$25</span></div>
+      <div class="tool-item"><span class="tool-name">18-gauge finish nail gun</span><span class="tool-badge tb-rent">Rent at HD</span></div>
+      <div class="tool-item"><span class="tool-name">Air compressor</span><span class="tool-badge tb-rent">Rent at HD</span></div>
+      <div class="tool-item"><span class="tool-name">Ratchet set (3/8" drive)</span><span class="tool-badge tb-buy">~$30</span></div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-cat">Measuring & Layout</div>
+      <div class="tool-item"><span class="tool-name">Tape measure (25 ft)</span><span class="tool-badge tb-buy">~$15</span></div>
+      <div class="tool-item"><span class="tool-name">Speed square</span><span class="tool-badge tb-buy">~$10</span></div>
+      <div class="tool-item"><span class="tool-name">4 ft level</span><span class="tool-badge tb-buy">~$20</span></div>
+      <div class="tool-item"><span class="tool-name">Chalk line</span><span class="tool-badge tb-buy">~$8</span></div>
+      <div class="tool-item"><span class="tool-name">Pencil + marker</span><span class="tool-badge tb-own">You own</span></div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-cat">Finishing Tools</div>
+      <div class="tool-item"><span class="tool-name">Caulk gun</span><span class="tool-badge tb-buy">~$10</span></div>
+      <div class="tool-item"><span class="tool-name">Paint brushes + roller kit</span><span class="tool-badge tb-buy">~$15</span></div>
+      <div class="tool-item"><span class="tool-name">Rubber mallet</span><span class="tool-badge tb-buy">~$12</span></div>
+      <div class="tool-item"><span class="tool-name">12" clamps (4-pack)</span><span class="tool-badge tb-buy">~$25</span></div>
+      <div class="tool-item"><span class="tool-name">Safety glasses + gloves</span><span class="tool-badge tb-buy">~$15</span></div>
+    </div>
+  </div>
+  <div class="tool-note">
+    <strong>Home Depot Tool Rental tip:</strong> A miter saw, nail gun, and compressor rented together for a full day typically runs $60–$90. Book online ahead of your build weekend to guarantee availability.
+  </div>
+</div>
+
+<!-- ── TIPS ── -->
+<div class="tab-panel" id="tab-tips">
+  <div class="section-intro">
+    <h2>Pro Tips</h2>
+    <p>Hard-won advice to save you time, money, and frustration on build day.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card highlight">
+      <span class="tip-icon">⚖️</span>
+      <div class="tip-title">Weight distribution matters</div>
+      <p class="tip-text">PVC planks are light — great! But 2×4 corner posts add up. Keep heavier framing close to the trailer axle to avoid tongue-heavy or tail-heavy towing issues.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🪚</span>
+      <div class="tip-title">PVC cutting tip</div>
+      <p class="tip-text">Use an 80-tooth fine blade on your circular saw. PVC melts and gums up coarse blades. Cut slowly and let the blade do the work — don't force it.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">📐</span>
+      <div class="tip-title">Blocking is not optional</div>
+      <p class="tip-text">PVC planks will bow and look wavy without solid backing every 16–24 inches. Add horizontal blocking between studs even where you think you don't need it.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">📏</span>
+      <div class="tip-title">Standard counter height</div>
+      <p class="tip-text">Food cart counters are typically 34–36 inches from the ground. Measure your team's comfortable serving height before cutting the window opening — you can't move it later.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🏛️</span>
+      <div class="tip-title">Massachusetts permit heads-up</div>
+      <p class="tip-text">Even for a serving-only cart, Worcester requires a Temporary Food Establishment permit from the Board of Health. Apply early — it can take 4–6 weeks to process.</p>
+    </div>
+    <div class="tip-card highlight">
+      <span class="tip-icon">🌧️</span>
+      <div class="tip-title">Seal everything before rain</div>
+      <p class="tip-text">Do all caulking in one continuous session before the next rainfall. Exposed frame wood that gets wet before planking is installed can warp and throw off your whole alignment.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🔩</span>
+      <div class="tip-title">Dry-fit first, always</div>
+      <p class="tip-text">Before nailing any PVC planks, dry-fit an entire wall to confirm spacing and cuts. Far easier to adjust before anything is fastened permanently.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🛡️</span>
+      <div class="tip-title">Use stainless fasteners outside</div>
+      <p class="tip-text">Any nail or screw exposed to weather should be stainless steel — not galvanized, not zinc. Galvanized fasteners leave rust streaks on white PVC within a season.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  Built with ❤️ by the family — Pop-up camper food cart conversion project &nbsp;·&nbsp; All materials from Home Depot
+</footer>
+
 <script>
-function switchTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById(id).classList.add('active');
-}
+  function showTab(id, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    el.classList.add('active');
+  }
 
-function toggle(el) {
-  el.classList.toggle('done');
-  el.textContent = el.classList.contains('done') ? '✓' : '';
+  function togglePhase(i) {
+    const card = document.getElementById('phase-' + i);
+    card.classList.toggle('open');
+  }
+
+  function toggleStep(el) {
+    const item = el.closest('.step-item');
+    item.classList.toggle('done');
+    el.innerHTML = item.classList.contains('done') ? '✓' : '';
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const allSteps = document.querySelectorAll('.step-item');
+    const doneSteps = document.querySelectorAll('.step-item.done');
+    const globalPct = Math.round((doneSteps.length / allSteps.length) * 100);
+    document.getElementById('global-fill').style.width = globalPct + '%';
+    document.getElementById('global-pct').textContent = globalPct + '%';
+
+    for (let i = 0; i < 6; i++) {
+      const list = document.querySelector('[data-phase="' + i + '"]');
+      if (!list) continue;
+      const total = list.querySelectorAll('.step-item').length;
+      const done = list.querySelectorAll('.step-item.done').length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      const fill = document.getElementById('pf' + i);
+      const label = document.getElementById('pl' + i);
+      const countLabel = document.getElementById('pp' + i);
+      if (fill) fill.style.width = pct + '%';
+      if (label) label.textContent = pct + '%';
+      if (countLabel) countLabel.textContent = done + '/' + total;
+    }
+  }
+
   updateProgress();
-}
-
-function updateProgress() {
-  const all = document.querySelectorAll('.check');
-  const done = document.querySelectorAll('.check.done');
-  const pct = Math.round((done.length / all.length) * 100);
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-pct').textContent = pct + '%';
-}
 </script>
+</body>
+</html>
